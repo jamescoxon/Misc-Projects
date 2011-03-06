@@ -1,0 +1,6 @@
+Group of Misc Projects
+
+Currently
+
+ * whitestaruploader - code that takes data from the orbcomm sat modem, parses
+it and converts it into fake telemetery data which will work with spacenear.us
