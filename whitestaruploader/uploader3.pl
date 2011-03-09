@@ -61,6 +61,7 @@ foreach $completedata(@reversedlines){
 	}
 }
 
+$oldepoch = 0;
 #This is the main loop, it grabs the data - checks the validity of the data and whether the flight computer has a fix, it then checks
 # to see if the epoch > - if so it generates a telem string and uploads to the server.
 while (1) {
@@ -87,6 +88,10 @@ while (1) {
 			$actualdata = $splitfield[1];
 		}
 		$datatitle = substr( $splitfield[0], 1, - 1 );
+		
+		if ($actualdata eq "null"){
+			$actualdata		= 0;
+		}
 		
 		if ($datatitle eq "epoch"){
 			$epoch = $actualdata;
@@ -206,12 +211,8 @@ while (1) {
 	if( ($latitude < 0.1) && ($latitude > -0.1) || ($longitude < 0.1) && ($longitude > -0.1) ){
 		$validdata = 0;
 	}
-
-	#Convert null to 0
-	if ($fix == "null"){
-		$fix = 0;
-	}
-	print "$epoch, $oldepoch, $latitude, longitude\n";
+	
+	print "$epoch, $oldepoch, $latitude, $longitude\n";
 	if($fix == 0 && $validdata == 1){
 		print "$epoch, $oldepoch\n";
 		if($epoch > $oldepoch){
