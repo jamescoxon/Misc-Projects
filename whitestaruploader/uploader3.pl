@@ -61,7 +61,8 @@ foreach $completedata(@reversedlines){
 	}
 }
 
-$oldepoch = 0;
+#$oldepoch = 0;
+
 #This is the main loop, it grabs the data - checks the validity of the data and whether the flight computer has a fix, it then checks
 # to see if the epoch > - if so it generates a telem string and uploads to the server.
 while (1) {
