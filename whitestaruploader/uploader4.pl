@@ -17,6 +17,7 @@
 # use LWP::Simple;
 use LWP::UserAgent;
 use Geo::Coordinates::DecimalDegrees;
+use Time::Local;
 
 
 $oldepoch = 0;
@@ -75,7 +76,22 @@ while (1) {
 		my $request = new HTTP::Request('GET', $url);
 		my $response = $tua->request($request);
 		my $content = $response->content();
-		print "$content\n";
+		@settingssplit = split(/\"/, $content); # "
+		@epochstart = split(/ /, $settingssplit[3]);
+		#split up date
+		@epochstartdate = split(/-/, $epochstart[0]);
+		$epochyear = $epochstartdate[0];
+		$epochmonth = $epochstartdate[1];
+		$epochday = $epochstartdate[2];
+		#split up time
+		@epochstarttime = split(/:/, $epochstart[1]);
+		$epochhour = $epochstarttime[0];
+		$epochminute = $epochstarttime[1];
+		$epochsecond = $epochstarttime[2];
+		
+		$unixepoch = timegm($epochsecond,$epochminute,$epochhour,$epochday,$epochmonth,$epochyear); 
+		
+		print "$epochyear, $epochmonth, $epochday, $epochhour, $epochminute, $epochsecond = $unixepoch\n";
 		$timecount = 0;
 	}
 	else{
@@ -234,19 +250,21 @@ while (1) {
 		print "$epoch, $oldepoch\n";
 		if($epoch > $oldepoch){
 			$oldepoch = $epoch;
-
+				
+			$totalepoch = $unixepoch + $epoch;
+			print "Calculate time of telem data: $unixepoch + $epoch = $totalepoch\n";
+			#Pass this to the time library to convert into hour/min/secs
+			@timeData = gmtime($totalepoch);
+			$count = $count + 1;
 			
-				@timeData = gmtime(time);
-				$count = $count + 1;
-				
-				$datastring = "WB8ELK2,$count,$timeData[2]:$timeData[1]:$timeData[0],$nmealatitude,$nmealongitude,$altitude,$fix,$ice;$temp_ext;$humidity;$speed;$climb;$ballastRemaining,0,0";
-				
-				print "$datastring\n";
-				
-				my $rh = new LWP::UserAgent;
-				$rh->timeout(120);
-				my $response = $rh->post( "http://www.robertharrison.org/listen/listen.php", { 'string' => $datastring, 'identity' => "Orbcomm" } );
-				print "$res\n";
+			$datastring = "WB8ELK2,$count,$timeData[2]:$timeData[1]:$timeData[0],$nmealatitude,$nmealongitude,$altitude,$fix,$ice;$temp_ext;$humidity;$speed;$climb;$ballastRemaining,0,0";
+			
+			print "$datastring\n";
+			
+			my $rh = new LWP::UserAgent;
+			$rh->timeout(120);
+			my $response = $rh->post( "http://www.robertharrison.org/listen/listen.php", { 'string' => $datastring, 'identity' => "Orbcomm" } );
+			print "$res\n";
 			}
 	}
 	else {
