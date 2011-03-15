@@ -22,6 +22,7 @@ use Geo::Coordinates::DecimalDegrees;
 $oldepoch = 0;
 $count = 0;
 $validdata = 0;
+$timecount = 11;
 
 #This section is used on start up - it pulls the latest data, runs through all the epochs, if epoch is > then the last 
 #epoch it makes this the latest epoch.
@@ -66,6 +67,21 @@ foreach $completedata(@reversedlines){
 #This is the main loop, it grabs the data - checks the validity of the data and whether the flight computer has a fix, it then checks
 # to see if the epoch > - if so it generates a telem string and uploads to the server.
 while (1) {
+	
+	if($timecount >= 10) {
+		my $tua = new LWP::UserAgent;
+		$tua->timeout(120);
+		my $url='http://50.16.222.54/publicData/getSample.php?settings=1';
+		my $request = new HTTP::Request('GET', $url);
+		my $response = $tua->request($request);
+		my $content = $response->content();
+		print "$content\n";
+		$timecount = 0;
+	}
+	else{
+		$timecount = $timecount + 1;
+	}
+	
 	my $ua = new LWP::UserAgent;
 	$ua->timeout(120);
 	my $url='http://50.16.222.54/publicData/getSample.php?latest';
