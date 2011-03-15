@@ -76,18 +76,18 @@ while (1) {
 		my $request = new HTTP::Request('GET', $url);
 		my $response = $tua->request($request);
 		my $content = $response->content();
-		@settingssplit = split(/\"/, $content); # "
-		@epochstart = split(/ /, $settingssplit[3]);
+		my @settingssplit = split(/\"/, $content); # "
+		my @epochstart = split(/ /, $settingssplit[3]);
 		#split up date
-		@epochstartdate = split(/-/, $epochstart[0]);
-		$epochyear = $epochstartdate[0];
-		$epochmonth = $epochstartdate[1];
-		$epochday = $epochstartdate[2];
+		my @epochstartdate = split(/-/, $epochstart[0]);
+		my $epochyear = $epochstartdate[0];
+		my $epochmonth = $epochstartdate[1];
+		my $epochday = $epochstartdate[2];
 		#split up time
-		@epochstarttime = split(/:/, $epochstart[1]);
-		$epochhour = $epochstarttime[0];
-		$epochminute = $epochstarttime[1];
-		$epochsecond = $epochstarttime[2];
+		my @epochstarttime = split(/:/, $epochstart[1]);
+		my $epochhour = $epochstarttime[0];
+		my $epochminute = $epochstarttime[1];
+		my $epochsecond = $epochstarttime[2];
 		
 		$unixepoch = timegm($epochsecond,$epochminute,$epochhour,$epochday,$epochmonth,$epochyear); 
 		
