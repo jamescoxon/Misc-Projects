@@ -41,6 +41,23 @@ sub RPad {
 	
 } # RPad
 
+#---------------------------------------------------------------------
+# LPad
+#---------------------------------------------------------------------
+# Pads a string on the left end to a specified length with a specified
+# character and returns the result.  Default pad char is space.
+#---------------------------------------------------------------------
+
+sub LPad {
+	
+	local($str, $len, $chr) = @_;
+	
+	$chr = " " unless (defined($chr));
+    
+	return substr(($chr x $len) . $str, -1 * $len, $len);
+	
+} # LPad
+
 #This section is used on start up - it pulls the latest data, runs through all the epochs, if epoch is > then the last 
 #epoch it makes this the latest epoch.
 #The aim is to avoid duplication, by grabbing all the epochs it means that the script will only look for new data after
@@ -80,10 +97,8 @@ foreach $completedata(@reversedlines){
 }
 
 
-sleep(10);
-
 #Uncomment oldepoch if you want to test with static data, this just resets all the good work done by the previous section :-D
-$oldepoch = 0;
+#$oldepoch = 0;
 
 #This is the main loop, it grabs the data - checks the validity of the data and whether the flight computer has a fix, it then checks
 # to see if the epoch > - if so it generates a telem string and uploads to the server.
@@ -111,7 +126,7 @@ while (1) {
 		
 		$unixepoch = timegm($epochsecond,$epochminute,$epochhour,$epochday,$epochmonth,$epochyear); 
 		
-		print "EPOCH UPDATE: $epochyear, $epochmonth, $epochday, $epochhour, $epochminute, $epochsecond = $unixepoch\n";
+		print "\nLAUNCH TIME UPDATE: $epochyear, $epochmonth, $epochday, $epochhour, $epochminute, $epochsecond = $unixepoch\n";
 		$timecount = 0;
 	}
 	else{
@@ -129,7 +144,7 @@ while (1) {
 	print "\n";
 	print scalar gmtime(time);
 	print "\n";
-	print "Current  Old    Total       Lat                Lon                Upload\n";
+	print "Current  Old      Total/Time  Lat               Lon                Upload\n";
 	
 	@splitlines = split(/},/, $content);
 	@reversedlines = reverse(@splitlines);
@@ -271,27 +286,36 @@ while (1) {
 	}
 
 	$totalepoch = $unixepoch + $epoch;
+
+	#print "Calculate time of telem data: $unixepoch + $epoch = $totalepoch\n";
+	#Pass this to the time library to convert into hour/min/secs
+	@timeData = gmtime($totalepoch);
+	foreach $timecomponent(@timeData){
+		if($timecomponent < 10){
+			$timecomponent = "0$timecomponent";
+		}
+	}
+	
 	print RPad($epoch, 9);
-	print RPad($oldepoch, 7);
-	print RPad($totalepoch, 12);
+	print RPad($oldepoch, 9);
+		#print RPad($totalepoch, 12);
+	print RPad("$timeData[2]:$timeData[1]:$timeData[0]", 12);
 	print RPad($latitude, 18);
 	print RPad($longitude, 18);
 	if($fix == 0 && $validdata == 1){
 		
 		if($epoch > $oldepoch){
 			print "    *\n";
-			$oldepoch = $epoch;
 			
-			#print "Calculate time of telem data: $unixepoch + $epoch = $totalepoch\n";
-			#Pass this to the time library to convert into hour/min/secs
-			@timeData = gmtime($totalepoch);
+			$oldepoch = $epoch;
 			
 			my $rh = new LWP::UserAgent;
 			$rh->timeout(120);
 			#my $response = $rh->post( "http://www.robertharrison.org/listen/listen.php", { 'string' => $datastring, 'identity' => "Orbcomm" } );
-			#my $response = $rh->post( "http://50.16.222.54/publicData/track.php", { 'vehicle' => "SpeedBall-1", 'time' => "$timeData[2]$timeData[1]$timeData[0]", 'lat' => $latitude, 'lon' => $longitude, 'alt' => $altitude, 'heading' => "0", 'speed' => "0", 'pass' => "aurora" } );
+			my $response = $rh->post( "http://50.16.222.54/publicData/track.php", { 'vehicle' => "SpeedBall-1", 'time' => "$timeData[2]$timeData[1]$timeData[0]", 'lat' => $latitude, 'lon' => $longitude, 'alt' => $altitude, 'heading' => "0", 'speed' => "0", 'pass' => "aurora" } );
 			
 			#print "$response\n";
+			sleep(2);
 			}
 		else{
 			print "\n";
