@@ -284,6 +284,10 @@ while (1) {
 	if( ($latitude < 0.1) && ($latitude > -0.1) || ($longitude < 2.5) && ($longitude > -0.1) ){
 		$validdata = 0;
 	}
+		
+	if ($longitude > 15.0){
+		$validdata = 0;
+	}
 
 	$totalepoch = $unixepoch + $epoch;
 
@@ -309,11 +313,18 @@ while (1) {
 			
 			$oldepoch = $epoch;
 			
+			$custom = "$pressure_fc;$pressure_bb;$pressure_bm;$pressure_bt;$temp_fc;$temp_ext;$temp_bb;$temp_bm;$temp_bt;$temp_batt;$humidity;$balloonValve;$ice;$hdop;$climb;$status;$dewpoint;$volts;$acc_cur;$ballastValve;$ballastRemaining";
 			my $rh = new LWP::UserAgent;
 			$rh->timeout(120);
 			#my $response = $rh->post( "http://www.robertharrison.org/listen/listen.php", { 'string' => $datastring, 'identity' => "Orbcomm" } );
-			my $response = $rh->post( "http://50.16.222.54/publicData/track.php", { 'vehicle' => "SpeedBall-1", 'time' => "$timeData[2]$timeData[1]$timeData[0]", 'lat' => $latitude, 'lon' => $longitude, 'alt' => $altitude, 'heading' => "0", 'speed' => "0", 'pass' => "aurora" } );
 			
+			if($heading > 0) {
+				my $response = $rh->post( "http://50.16.222.54/publicData/track.php", { 'vehicle' => "SpeedBall-1", 'time' => "$timeData[2]$timeData[1]$timeData[0]", 'lat' => $latitude, 'lon' => $longitude, 'alt' => $altitude, 'heading' => $heading, 'speed' => $speed, 'data' => $custom, 'pass' => "aurora" } );
+			}
+			else{
+				my $response = $rh->post( "http://50.16.222.54/publicData/track.php", { 'vehicle' => "SpeedBall-1", 'time' => "$timeData[2]$timeData[1]$timeData[0]", 'lat' => $latitude, 'lon' => $longitude, 'alt' => $altitude, 'heading' => $heading, 'speed' => $speed, 'pass' => "aurora" } );
+				
+			}
 			#print "$response\n";
 			sleep(2);
 			}

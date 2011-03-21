@@ -306,6 +306,7 @@ while (1) {
 		$validdata = 0;
 	}
 
+	$unixepoch = 1300576033;
 	$totalepoch = $unixepoch + $epoch;
 
 	#print "Calculate time of telem data: $unixepoch + $epoch = $totalepoch\n";
