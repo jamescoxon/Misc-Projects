@@ -2,10 +2,12 @@
 
 use LWP::UserAgent;
 use Time::Local;
+use POSIX;
 
 $glId = "0VSOSac1275Xczm05gSxTBEcJcPoAf6Ix";
 $count = 0;
 $oldtime = 1301760620;
+$altencoded = 1;
 
 my $ua = LWP::UserAgent->new;
 $ua->timeout(120);
@@ -50,13 +52,33 @@ foreach $sections (@splitsections) {
 		print "$subcomp[1]\n";
 	}
 
-print "Time = $time, Latitude = $latitude, Longitude = $longitude\n";
+	if ($altencoded) {
+		# Extract encoded coordinates and altitude
+		$latitude  /= 90.0 / 99.0;
+		$longitude /= 180.0 / 99.0;
+		
+		$altitude  = 0 * 10000; # TODO - extract this digit from NSEW
+		$altitude += floor($latitude) * 100;
+		$altitude += floor($longitude);
+		
+		$latitude -= floor($latitude);
+		$latitude *= 90.0;
+		
+		$longitude -= floor($longitude);
+		$longitude *= 180.0;
+		
+		# Round the results to something sensible
+		$latitude = sprintf("%.4f", $latitude);
+		$longitude = sprintf("%.4f", $longitude);
+	}
+	
+	print "Time = $time, Latitude = $latitude, Longitude = $longitude, Altitude = $altitude\n";
 	$count = $count + 1;
 	
 	my $time1 = time;
 	my ($sec, $min, $hour, $day,$month,$year) = (gmtime($time1))[0,1,2,3,4,5,6];
 	
-	$datastring = "KI6YMZ,$count,$hour:$min:$sec,$latitude,$longitude,0,0,0,0";
+	$datastring = "KI6YMZ,$count,$hour:$min:$sec,$latitude,$longitude,$altitude,0,0,0";
 	
 	print "$datastring\n";
 	
