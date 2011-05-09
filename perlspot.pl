@@ -54,12 +54,17 @@ while (1)
 		}
 	}
 	
+	if($latitude > 0 && $longitude > 0) {$altTThousand = 0;} #NE
+	if($latitude < 0 && $longitude > 0) {$altTThousand = 1;} #SE
+	if($latitude < 0 && $longitude < 0) {$altTThousand = 2;} #SW
+	if($latitude < 0 && $longitude < 0) {$altTThousand = 3;} #NW
+	
 	if ($altencoded) {
 		# Extract encoded coordinates and altitude
 		$latitude  /= 90.0 / 99.0;
 		$longitude /= 180.0 / 99.0;
 		
-		$altitude  = 0 * 10000; # TODO - extract this digit from NSEW
+		$altitude  = $altTThousand * 10000; # TODO - extract this digit from NSEW
 		$altitude += floor($latitude) * 100;
 		$altitude += floor($longitude);
 		
