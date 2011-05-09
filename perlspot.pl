@@ -17,7 +17,7 @@ while (1)
 	$url, 
 	[
 	"glId" => $glId, 
-	"limit" => "50", 
+	"limit" => "100", 
 	"linkPw" => "", 
 	"mode" => "none", 
 	"start" => "0", 
@@ -30,21 +30,22 @@ while (1)
 	
 	@splitsections = split(/<message>/, $content);
 	
-	foreach $sections (@splitsections) {
+	 @Rsplitsections = reverse(@splitsections); 
+	foreach $sections (@Rsplitsections) {
 		print "$sections\n";
 		@components = split(/<\//, $sections);
 		foreach $subsections (@components) {
-			print "$subsections\n";
+			#print "$subsections\n";
 			@subcomp = split(/<latitude>/, $subsections);
 			if ($subcomp[1] ne "") {
 				$latitude = $subcomp[1];
 			}
-			print "$subcomp[1]\n";
+			#print "$subcomp[1]\n";
 			@subcomp = split(/<longitude>/, $subsections);
 			if ($subcomp[1] ne "") {
 				$longitude = $subcomp[1];
 			}
-			print "$subcomp[1]\n";
+			#print "$subcomp[1]\n";
 			
 			@subcomp = split(/<timeInGMTSecond>/, $subsections);
 			if ($subcomp[1] ne "") {
@@ -85,10 +86,11 @@ while (1)
 		$oldtime = $time;
 		$count = $count + 1;
 		
-		my $time1 = time;
-		my ($sec, $min, $hour, $day,$month,$year) = (gmtime($time1))[0,1,2,3,4,5,6];
+		my $time1 = time; #real time
+		my ($sec, $min, $hour, $day,$month,$year) = (gmtime($time))[0,1,2,3,4,5,6];
 		
-		$datastring = "KI6YMZ,$count,$hour:$min:$sec,$latitude,$longitude,$altitude,0,0,0";
+		$longitude = $longitude * -1;
+		$datastring = "SPOT,$count,$hour:$min:$sec,$latitude,$longitude,$altitude,0,0,0";
 		
 		print "$datastring\n";
 		
