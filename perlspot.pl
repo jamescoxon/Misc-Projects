@@ -17,10 +17,10 @@ while (1)
 	$url, 
 	[
 	"glId" => $glId, 
-	"limit" => "100", 
+	"limit" => "", 
 	"linkPw" => "", 
 	"mode" => "none", 
-	"start" => "0", 
+	"start" => "", 
 	]);
 	
 	print $response;
@@ -51,7 +51,7 @@ while (1)
 			if ($subcomp[1] ne "") {
 				$time = $subcomp[1];
 			}
-			print "$subcomp[1]\n";
+			#print "$subcomp[1]\n";
 		}
 	}
 	
