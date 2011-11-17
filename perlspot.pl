@@ -5,7 +5,7 @@ use POSIX;
 
 $glId = "02vhBoDslO1BaEqCUR9sUikleajn0x2u4";
 $count = 0;
-$oldtime = 1301760620;
+$oldtime = 0;
 $altencoded = 1;
 
 while (1)
@@ -89,7 +89,7 @@ while (1)
 		my $time1 = time; #real time
 		my ($sec, $min, $hour, $day,$month,$year) = (gmtime($time))[0,1,2,3,4,5,6];
 		
-		$longitude = $longitude * -1;
+		$longitude = $longitude;
 		$datastring = "SPOT,$count,$hour:$min:$sec,$latitude,$longitude,$altitude,0,0,0";
 		
 		print "$datastring\n";

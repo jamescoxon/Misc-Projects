@@ -1,0 +1,42 @@
+#######################################
+# Syntax Coloring HopeRF's RFM22
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+rfm22	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+read	KEYWORD2
+write	KEYWORD2
+setInterrupt	KEYWORD2
+readAndClearInterrupts	KEYWORD2
+resetFIFO	KEYWORD2
+init	KEYWORD2
+initSPI	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
+RFM_INT_POR	LITERAL1
+RFM_INT_CHIPRDY	LITERAL1
+RFM_INT_LBD	LITERAL1
+RFM_INT_WUT	LITERAL1
+RFM_INT_RSSI	LITERAL1
+RFM_INT_PREAINVAL	LITERAL1
+RFM_INT_PREAVAL	LITERAL1
+RFM_INT_SWDET	LITERAL1
+RFM_INT_CRERROR	LITERAL1
+RFM_INT_PKVALID	LITERAL1
+RFM_INT_PKSENT	LITERAL1
+RFM_INT_EXT	LITERAL1
+RFM_INT_RXFFAFULL	LITERAL1
+RFM_INT_XTFFAEM	LITERAL1
+RFM_INT_TXFFAFULL	LITERAL1
+RFM_INT_FFERR	LITERAL1
