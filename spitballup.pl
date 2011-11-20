@@ -12,11 +12,9 @@ while (1) {
 	my $response = $ua->post($url);
 
 	my $content = $response->content();
-	print "$content\n";
+	#print "$content\n";
 
 	@splitsections = split(/,/, $content);
-
-	print "$splitsections[13]\n";
 
 	print "$splitsections[14]\n";
 	$callsign = $splitsections[14];
