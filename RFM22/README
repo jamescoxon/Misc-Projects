@@ -1,3 +1,8 @@
+Updated 2012
+Adapted by jcoxon (jacoxon@gmail.com) for use on high altitude balloons.
+
+Originally from https://github.com/niloc132/arduino-rfm22
+
 I purchased several RFM22 modules (http://www.hoperf.com/rf_fsk/rfm22.htm) from sparkfun, with the intention of attaching it to my Arduino, and building inexpensive devices able to speak to each other over the air. This turned out to be somewhat more difficult than I had imagined, but once I solved the basic hardware issues, I put this library together to make it easier to interact with the radio from code.
 
 THe library does some basic SPI setup to talk to the device, and provides some low level commands to get and set the values of various registers on the device. Assuming the Arduino has one of its interrupt lines connected to the device, setting and clearing interrupts that can be set is also exposed from a few simple methods. Additionally, there is an init command which goes through and sets the various values required for basic wireless operation for the 434MHz models.
