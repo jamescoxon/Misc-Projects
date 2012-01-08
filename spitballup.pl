@@ -4,8 +4,10 @@ use POSIX;
 
 $callsign = 'wb8elk-11';
 $password = 'aurora';
+$oldtime = 0;
 
 while (1) {
+
 	my $ua = LWP::UserAgent->new;
 	$ua->timeout(120);
 	my $url="http://db.aprsworld.net/datamart/csv.php?call=$callsign% ";
@@ -49,25 +51,27 @@ while (1) {
 	$min = $splitTime[1];
 	$sec = $splitTime[2];
 
+	if($oldtime != $time) {
+		$oldtime = $time;
+		my $spacenear = LWP::UserAgent->new;
+		$spacenear->timeout(120);
+		my $url='http://spacenear.us/tracker/track.php';
+		my $response = $spacenear->post($url);
+		my $response = $spacenear->post(
+		$url, 
+		[
+		"vehicle" => "SPITBall-1", 
+		"time" => "$hour$min$sec", 
+		"lat" => "$latitude", 
+		"lon" => "$longitude", 
+		"alt" => "$altitude",
+		"pass" => "$password",
+		]);
 
-	my $spacenear = LWP::UserAgent->new;
-	$spacenear->timeout(120);
-	my $url='http://spacenear.us/tracker/track.php';
-	my $response = $spacenear->post($url);
-	my $response = $spacenear->post(
-	$url, 
-	[
-	"vehicle" => "SPITBall-1", 
-	"time" => "$hour$min$sec", 
-	"lat" => "$latitude", 
-	"lon" => "$longitude", 
-	"alt" => "$altitude",
-	"pass" => "$password",
-	]);
-
-	print "$response\n";
-	my $content = $response->content();
-	print "$content\n";
+		print "$response\n";
+		my $content = $response->content();
+		print "$content\n";
+	}
 	
 	sleep(60);
 }

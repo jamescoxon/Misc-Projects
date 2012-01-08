@@ -162,7 +162,7 @@ void rfm22::init() {
 	write(0x25, 0x06);
 	
 	// Tx power to max
-	write(0x6D, 0x03);//or is it 0x03?
+	write(0x6D, 0x04);//or is it 0x03?
 	
 	// Tx data rate (1, 0) - these are the same in both examples
 	write(0x6E, 0x27);
