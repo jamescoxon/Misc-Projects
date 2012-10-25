@@ -63,30 +63,6 @@ void rfm22::resetFIFO() {
 	write(0x08, 0x00);
 }
 
-void rfm22::setInterrupt(uint16_t interrupt, uint16_t is_on) {
-	//high bits of interrupt are 0x03/0x05, low are 0x04/0x06
-	uint8_t high = (interrupt >> 8) & 0xff;//	0x03/0x05
-	uint8_t high_is_on = (is_on >> 8) & 0xff;
-	uint8_t low = interrupt & 0xff;//		0x04/0x06
-	uint8_t low_is_on = is_on & 0xff;
-  
-	// read out a set of regs
-	//uint8_t regs = read(0x05);
-	// mask out the values we will leave along
-	//uint8_t ignore = regs & (~high);
-	// zero out the values we don't care about (probably improperly set)
-	//uint8_t important = high_is_on & high;
-	// combine the two sets and write back out
-	write(0x05, (read(0x05) & (~high)) | (high_is_on & high));
-	
-	write(0x06, (read(0x06) & (~low))  | (low_is_on	 & low));
-}
-
-uint16_t rfm22::readAndClearInterrupts() {
-	//high bits are 0x03, low are 0x04
-	return (read(0x03) << 8) | read(0x04);
-}
-
 // Returns true if centre + (fhch * fhs) is within limits
 // Caution, different versions of the RF22 suport different max freq
 // so YMMV

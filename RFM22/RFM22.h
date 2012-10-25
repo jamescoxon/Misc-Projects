@@ -36,9 +36,6 @@ public:
 	
 	void read(uint8_t start_addr, uint8_t buf[], uint8_t len);
 	void write(uint8_t start_addr, uint8_t data[], uint8_t len);
-
-	void setInterrupt(uint16_t interrupt, uint16_t isOn);
-	uint16_t readAndClearInterrupts();
 	void resetFIFO();
 	
 	boolean setFrequency(float centre);

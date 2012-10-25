@@ -3,14 +3,15 @@
 use LWP::UserAgent;
 use Time::Local;
 
-$count = 171;
+$count = 0;
 $oldlatitude = 0;
+$password = 'aurora';
 
 while(1)
 {
 	my $ua = new LWP::UserAgent;
 	$ua->timeout(120);
-	my $url='http://www.projectbluehorizon.com/httpapi/createFromPoints.php?mid=14';
+	my $url='http://www.projectbluehorizon.com/httpapi/createFromPoints.php?mid=18';
 	my $request = new HTTP::Request('GET', $url);
 	my $response = $ua->request($request);
 	my $content = $response->content();
@@ -31,19 +32,47 @@ while(1)
 	print "$latitude: $longitude: $altitude\n";
 
 	my $time = time;
-	my ($sec, $min, $hour, $day,$month,$year) = (gmtime($time))[0,1,2,3,4,5,6];
+	my ($sec, $min, $hour, $day, $month, $year) = (gmtime($time))[0,1,2,3,4,5,6];
 
 	if($latitude != $oldlatitude){
 		$oldlatitude = $latitude;
 		$count = $count + 1;
-
+		
+		print "$hour";
+		
+		if($hour < 10){
+			$hour = "0$hour";
+		}
+		if($min < 10){
+			$min = "0$min";
+		}
+		if($sec < 10){
+			$sec = "0$sec";
+		}
 		$datastring = "PBH,$count,$hour:$min:$sec,$latitude,$longitude,$altitude";
 
 		print "$datastring\n";
+		
+		my $spacenear = LWP::UserAgent->new;
+		$spacenear->timeout(120);
+		my $url='http://spacenear.us/tracker/track.php';
+		my $response = $spacenear->post($url);
+		my $response = $spacenear->post(
+		$url, 
+		[
+		"vehicle" => "PBH", 
+		"time" => "$hour$min$sec", 
+		"lat" => "$latitude", 
+		"lon" => "$longitude", 
+		"alt" => "$altitude",
+		"pass" => "$password",
+		]);
+		
+		print "$response\n";
+		my $content = $response->content();
+		print "$content\n";
 
-		my $rh = new LWP::UserAgent;
-		$rh->timeout(120);
-		my $response = $rh->post( "http://www.robertharrison.org/listen/listen.php", { 'string' => $datastring, 'identity' => "PBH_Team" } );
+
 	}
 	sleep(30);
 }
