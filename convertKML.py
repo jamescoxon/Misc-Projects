@@ -20,9 +20,15 @@ class cord:
 	def __sub__(self, val):
 		return cord(self.lat - val.lat, self.lon - val.lon)
 	def __div__(self, val):
-		return cord(self.lat / val, self.lon / val)
+		if type(val) is cord:
+			return cord(self.lat / val.lat, self.lon / val.lon)
+		else:
+			return cord(self.lat / val, self.lon / val)
 	def __mul__(self, val):
-		return cord(self.lat * val, self.lon * val)
+		if type(val) is cord:
+			return cord(self.lat * val.lat, self.lon * val.lon)
+		else:
+			return cord(self.lat * val, self.lon * val)
 	def __str__(self):
 		return "%f, %f" % (self.lat, self.lon)
 	def __repr__(self):
