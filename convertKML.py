@@ -65,6 +65,7 @@ for line in p:
 		kml_string = str(data[2].rstrip()) + ',' + str(data[3].rstrip()) + ',0\n'
 		kml_file.write(kml_string)
 		line_num = 0
+		moving_average = cord(0,0)
 	else:
 		moving_average += cord(lat, lon)
 		line_num = line_num + 1
