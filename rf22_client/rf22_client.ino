@@ -67,13 +67,12 @@ void loop()
   
   prepData();
   CharToByte(superbuffer, data, sizeof(superbuffer));
+  Serial.print(superbuffer);
   Serial.println("Sending to rf22_server");
     
     rf22.send(data, sizeof(data));
    
     rf22.waitPacketSent();
     Serial.println("Done");
-    
-    count++;
 }
 
